@@ -472,6 +472,10 @@ const KeyboardShortcuts = memo(({
           name: t('Fix incorrect duration'),
           category: outputCategory,
         },
+        startMerge: {
+          name: t('Start merging files'),
+          category: outputCategory,
+        },
 
         // batchFilesCategory
         batchPreviousFile: {

@@ -75,6 +75,8 @@ const defaultKeyBindings = [
 
   { keys: 'alt+up', action: 'increaseVolume' },
   { keys: 'alt+down', action: 'decreaseVolume' },
+
+  { keys: 'm', action: 'startMerge' },
 ];
 
 const defaults = {

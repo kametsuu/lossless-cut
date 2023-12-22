@@ -26,6 +26,7 @@ const rowStyle = {
 
 const ConcatDialog = memo(({
   isShown, onHide, paths, onConcat,
+  shortcutCallback,
   alwaysConcatMultipleFiles, setAlwaysConcatMultipleFiles,
 }) => {
   const { t } = useTranslation();
@@ -156,6 +157,14 @@ const ConcatDialog = memo(({
   const onOutputFormatUserChange = useCallback((newFormat) => setFileFormat(newFormat), [setFileFormat]);
 
   const onConcatClick = useCallback(() => onConcat({ paths, includeAllStreams, streams: fileMeta.streams, outFileName, fileFormat, clearBatchFilesAfterConcat }), [clearBatchFilesAfterConcat, fileFormat, fileMeta, includeAllStreams, onConcat, outFileName, paths]);
+
+  useEffect(() => {
+    if (shortcutCallback?.text === i18n.t('Merging files')) {
+      setTimeout(() => {
+        onConcat({ paths, includeAllStreams, streams: fileMeta.streams, outFileName, fileFormat, clearBatchFilesAfterConcat });
+      }, 50);
+    }
+  }, [shortcutCallback, onConcat, paths, includeAllStreams, fileMeta, outFileName, fileFormat, clearBatchFilesAfterConcat]);
 
   return (
     <>
