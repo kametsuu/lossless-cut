@@ -74,3 +74,19 @@ jobs:
           mac_certs: ${{ secrets.mac_certs }}
           mac_certs_password: ${{ secrets.mac_certs_password }}
 
+      - name: (Windows) Upload artifacts
+        uses: actions/upload-artifact@v3
+        if: startsWith(matrix.os, 'windows') && env.is_tag == 'false'
+        with:
+          name: Windows
+          path: |
+            dist/LosslessCut-win-x64.7z
+      - name: (Linux) Upload artifacts
+        uses: actions/upload-artifact@v3
+        if: startsWith(matrix.os, 'ubuntu') && env.is_tag == 'false'
+        with:
+          name: Linux
+          path: |
+            dist/LosslessCut-linux-arm64.tar.bz2
+            dist/LosslessCut-linux-armv7l.tar.bz2
+            dist/LosslessCut-linux-x64.tar.bz2
