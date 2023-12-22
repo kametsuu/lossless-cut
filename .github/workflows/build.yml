@@ -50,19 +50,6 @@ jobs:
         run: |
           echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode > LosslessCut_Mac_App_Store_provisioning_profile.provisionprofile
 
-      - name: (MacOS) Prepare Apple API key
-        # Import Apple API key for uploading to Mac App Store and for notarization
-        if: startsWith(matrix.os, 'macos')
-        run: |
-          mkdir -p ~/.appstoreconnect/private_keys/
-          echo '${{ secrets.api_key }}' > ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.api_key_id }}.p8
-
-      - name: (MacOS) Download ffmpeg
-        if: startsWith(matrix.os, 'macos')
-        run: |
-          yarn download-ffmpeg-darwin-x64
-          yarn download-ffmpeg-darwin-arm64
-
       - name: (Windows) Download ffmpeg
         if: startsWith(matrix.os, 'windows')
         run: yarn download-ffmpeg-win32-x64
@@ -86,44 +73,4 @@ jobs:
 
           mac_certs: ${{ secrets.mac_certs }}
           mac_certs_password: ${{ secrets.mac_certs_password }}
-
-# Temporary 30 day certificate, not needed for Microsoft Store
-#          windows_certs: ${{ secrets.windows_certs }}
-#          windows_certs_password: ${{ secrets.windows_certs_password }}
-        env:
-          APPLE_API_KEY: ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.api_key_id }}.p8
-          APPLE_API_KEY_ID: ${{ secrets.api_key_id }}
-          APPLE_API_ISSUER: ${{ secrets.api_key_issuer_id }}
-
-      - name: (MacOS) Upload to Mac App Store
-        if: startsWith(matrix.os, 'macos') && env.is_tag == 'true'
-        run: |
-          node script/xcrun-wrapper.mjs dist/mas-universal/LosslessCut-mac-universal.pkg ${{ secrets.api_key_id }} ${{ secrets.api_key_issuer_id }} 1505323402 no.mifi.losslesscut-mac
-
-      - name: (MacOS) Upload artifacts
-        uses: actions/upload-artifact@v3
-        if: startsWith(matrix.os, 'macos') && env.is_tag == 'false'
-        with:
-          name: MacOS
-          path: |
-            dist/LosslessCut-mac-arm64.dmg
-            dist/LosslessCut-mac-x64.dmg
-
-      - name: (Windows) Upload artifacts
-        uses: actions/upload-artifact@v3
-        if: startsWith(matrix.os, 'windows') && env.is_tag == 'false'
-        with:
-          name: Windows
-          path: |
-            dist/LosslessCut-win-x64.7z
-
-      - name: (Linux) Upload artifacts
-        uses: actions/upload-artifact@v3
-        if: startsWith(matrix.os, 'ubuntu') && env.is_tag == 'false'
-        with:
-          name: Linux
-          path: |
-            dist/LosslessCut-linux-arm64.tar.bz2
-            dist/LosslessCut-linux-armv7l.tar.bz2
-            dist/LosslessCut-linux-x64.tar.bz2
 
